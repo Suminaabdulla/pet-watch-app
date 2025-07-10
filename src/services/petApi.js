@@ -1,0 +1,111 @@
+// src/services/petApi.js
+// Mock API for pets data
+export const mockPetsData = [
+  {
+    id: 1,
+    name: 'Buddy',
+    breed: 'Golden Retriever',
+    age: '2 years',
+    location: 'Dubai Marina',
+    description: 'Friendly and energetic dog, loves to play fetch and go for walks. Great with children and other pets.',
+    image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop',
+    price: 500,
+    vaccinated: true,
+    trained: true,
+    gender: 'Male',
+    weight: '25 kg',
+    color: 'Golden',
+    adoptionFee: 500,
+  },
+  {
+    id: 2,
+    name: 'Whiskers',
+    breed: 'Persian Cat',
+    age: '1 year',
+    location: 'Downtown Dubai',
+    description: 'Sweet and gentle cat, loves to cuddle and purr. Perfect for apartment living.',
+    image: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=300&fit=crop',
+    price: 300,
+    vaccinated: true,
+    trained: false,
+    gender: 'Female',
+    weight: '4 kg',
+    color: 'White',
+    adoptionFee: 300,
+  },
+  {
+    id: 3,
+    name: 'Max',
+    breed: 'German Shepherd',
+    age: '3 years',
+    location: 'Jumeirah',
+    description: 'Loyal and protective dog, well-trained and intelligent. Great guard dog and family companion.',
+    image: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=300&fit=crop',
+    price: 800,
+    vaccinated: true,
+    trained: true,
+    gender: 'Male',
+    weight: '35 kg',
+    color: 'Black & Tan',
+    adoptionFee: 800,
+  },
+  {
+    id: 4,
+    name: 'Luna',
+    breed: 'Siamese Cat',
+    age: '6 months',
+    location: 'Business Bay',
+    description: 'Playful kitten with beautiful blue eyes. Very social and loves attention.',
+    image: 'https://images.unsplash.com/photo-1573824426704-6a1e2af90d5e?w=400&h=300&fit=crop',
+    price: 250,
+    vaccinated: true,
+    trained: false,
+    gender: 'Female',
+    weight: '2 kg',
+    color: 'Cream & Brown',
+    adoptionFee: 250,
+  },
+  {
+    id: 5,
+    name: 'Rocky',
+    breed: 'Bulldog',
+    age: '4 years',
+    location: 'Palm Jumeirah',
+    description: 'Calm and gentle bulldog, loves to relax and enjoy quiet time. Great with seniors.',
+    image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop',
+    price: 600,
+    vaccinated: true,
+    trained: true,
+    gender: 'Male',
+    weight: '22 kg',
+    color: 'Brindle',
+    adoptionFee: 600,
+  },
+  {
+    id: 6,
+    name: 'Bella',
+    breed: 'Maine Coon',
+    age: '2 years',
+    location: 'DIFC',
+    description: 'Large, fluffy cat with a gentle personality. Very intelligent and friendly.',
+    image: 'https://images.unsplash.com/photo-1569591159212-b02ea8a9f239?w=400&h=300&fit=crop',
+    price: 400,
+    vaccinated: true,
+    trained: false,
+    gender: 'Female',
+    weight: '6 kg',
+    color: 'Brown Tabby',
+    adoptionFee: 400,
+  },
+];
+
+export const fetchPets = async () => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return mockPetsData;
+};
+
+export const fetchPetById = async (id) => {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockPetsData.find(pet => pet.id === parseInt(id));
+};
