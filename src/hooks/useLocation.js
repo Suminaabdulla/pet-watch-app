@@ -1,6 +1,11 @@
 // src/hooks/useLocation.js
 import { useState, useEffect } from 'react';
 import Geolocation from '@react-native-community/geolocation';
+import {
+  requestLocationPermission,
+  showLocationPermissionAlert,
+  getLocationErrorMessage
+} from '../utils/permissions';
 
 export const useLocation = () => {
   const [location, setLocation] = useState(null);
@@ -8,11 +13,32 @@ export const useLocation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const handleLocationPermission = async () => {
+    const permissionResult = await requestLocationPermission();
+
+    if (!permissionResult.granted) {
+      setError(permissionResult.message);
+      if (permissionResult.showSettings) {
+        showLocationPermissionAlert(permissionResult);
+      }
+    }
+
+    return permissionResult.granted;
+  };
+
   const getCurrentLocation = async () => {
     setLoading(true);
     setError('');
 
     try {
+      // First, request location permission
+      const hasPermission = await handleLocationPermission();
+
+      if (!hasPermission) {
+        setLoading(false);
+        return;
+      }
+
       // Get current location using React Native Geolocation
       Geolocation.getCurrentPosition(
         (position) => {
@@ -21,9 +47,10 @@ export const useLocation = () => {
           setAddress('Dubai Marina, Dubai, UAE');
           setLoading(false);
         },
-        (error) => {
-          setError('Failed to get location. Please try again.');
-          console.error('Location error:', error);
+        (locationError) => {
+          const errorMessage = getLocationErrorMessage(locationError);
+          setError(errorMessage);
+          console.error('Location error:', locationError);
           setLoading(false);
         },
         {
@@ -41,6 +68,7 @@ export const useLocation = () => {
 
   useEffect(() => {
     getCurrentLocation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

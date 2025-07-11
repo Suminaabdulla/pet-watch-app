@@ -8,6 +8,11 @@ import {
   ActivityIndicator
 } from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
+import {
+  requestLocationPermission,
+  showLocationPermissionAlert,
+  getLocationErrorMessage
+} from '../utils/permissions';
 
 
 const LocationScreen = ({ navigation }) => {
@@ -19,30 +24,59 @@ const LocationScreen = ({ navigation }) => {
 
   useEffect(() => {
     getCurrentLocation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getCurrentLocation = () => {
+  const handleLocationPermission = async () => {
+    const permissionResult = await requestLocationPermission();
+
+    if (!permissionResult.granted) {
+      setError(permissionResult.message);
+      if (permissionResult.showSettings) {
+        showLocationPermissionAlert(permissionResult);
+      }
+    }
+
+    return permissionResult.granted;
+  };
+
+  const getCurrentLocation = async () => {
     setLoading(true);
     setError('');
 
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setLocation(position);
-        // For simplicity, we'll just show coordinates
-        // In a real app, you'd use a reverse geocoding service
-        setAddress(`${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`);
+    try {
+      // First, request location permission
+      const hasPermission = await handleLocationPermission();
+
+      if (!hasPermission) {
         setLoading(false);
-      },
-      (error) => {
-        setError('Error getting location: ' + error.message);
-        setLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
+        return;
       }
-    );
+
+      Geolocation.getCurrentPosition(
+        (position) => {
+          setLocation(position);
+          // For simplicity, we'll just show coordinates
+          // In a real app, you'd use a reverse geocoding service
+          setAddress(`${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`);
+          setLoading(false);
+        },
+        (locationError) => {
+          const errorMessage = getLocationErrorMessage(locationError);
+          setError(errorMessage);
+          setLoading(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+        }
+      );
+    } catch (err) {
+      setError('Failed to get location. Please try again.');
+      console.error('Location error:', err);
+      setLoading(false);
+    }
   };
 
   const openMapsSimulation = () => {

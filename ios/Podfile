@@ -1,6 +1,12 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/react-native-permissions/scripts/setup'
 
 platform :ios, '15.1'
+
+# ⬇️ uncomment the permissions you need
+setup_permissions([
+  'LocationWhenInUse',
+])
 
 target 'PetWatchApp' do
   config = use_native_modules!
